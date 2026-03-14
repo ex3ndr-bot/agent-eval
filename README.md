@@ -36,3 +36,15 @@ It combines:
 ## GitHub Pages
 
 This repo is ready for GitHub Pages as a static site. Keep `.nojekyll` in the root so the `js/` folder is served without Jekyll processing.
+
+## Features
+- Animated score gauges
+- Side-by-side comparison mode
+- Eight evaluation presets
+- Click-to-load demo examples
+- Expandable criterion findings
+- JSON export
+- Dark/light theme toggle
+- Mobile-friendly responsive layout
+- Criterion tooltips
+- History page with local trend chart

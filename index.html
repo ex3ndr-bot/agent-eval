@@ -1,130 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Agent Eval</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="app-shell">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">Static Demo / GitHub Pages</p>
-          <h1>Agent Eval</h1>
-          <p class="subtitle">Evaluate AI agent outputs for quality, safety, and delivery discipline.</p>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Eval</title>
+  <meta name="description" content="Evaluate AI outputs with presets, detailed findings, comparisons, and history tracking." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="page-shell">
+    <header class="topbar glass">
+      <div>
+        <p class="eyebrow">Static AI output evaluator</p>
+        <h1>Agent Eval</h1>
+      </div>
+      <div class="topbar-actions">
+        <a class="secondary-btn" href="history.html">History</a>
+        <button id="themeToggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel hero glass">
+        <div class="hero-copy">
+          <span class="pill">New</span>
+          <h2>Score outputs like a judge, not a spreadsheet.</h2>
+          <p>Use rich presets, animated score rings, side-by-side comparisons, expandable findings, and exportable JSON. Everything runs client-side.</p>
         </div>
-        <nav class="nav-links" aria-label="Primary">
-          <a class="nav-link active" href="index.html">Dashboard</a>
-          <a class="nav-link" href="history.html">History</a>
-        </nav>
-      </header>
-
-      <main class="dashboard-grid">
-        <section class="panel panel-input">
-          <div class="panel-head">
-            <div>
-              <p class="section-label">Input</p>
-              <h2>Agent Output</h2>
-            </div>
-            <span class="badge">Client-side only</span>
+        <div class="hero-stats">
+          <div class="mini-stat">
+            <strong>8</strong>
+            <span>Presets</span>
           </div>
+          <div class="mini-stat">
+            <strong>2-up</strong>
+            <span>Comparison mode</span>
+          </div>
+          <div class="mini-stat">
+            <strong>∞</strong>
+            <span>Local history</span>
+          </div>
+        </div>
+      </section>
 
-          <label class="field">
-            <span>Preset</span>
-            <select id="configSelect" aria-label="Evaluation preset"></select>
+      <section class="panel controls glass">
+        <div class="section-header">
+          <div>
+            <h3>Setup</h3>
+            <p>Choose a preset, load an example, then evaluate one or two outputs.</p>
+          </div>
+          <label class="toggle-row">
+            <span>Comparison mode</span>
+            <input id="comparisonToggle" type="checkbox" />
+            <span class="switch"></span>
           </label>
+        </div>
 
-          <label class="field">
-            <span>Response</span>
-            <textarea
-              id="outputInput"
-              rows="16"
-              placeholder="Paste an agent response here for evaluation..."
-            ></textarea>
+        <div class="controls-grid">
+          <label>
+            <span>Evaluation preset</span>
+            <select id="presetSelect"></select>
           </label>
+          <label>
+            <span>Example outputs</span>
+            <select id="exampleSelect"></select>
+          </label>
+          <button id="loadExampleBtn" class="secondary-btn align-end">Load example</button>
+        </div>
 
-          <div class="action-row">
-            <button id="evaluateButton" class="btn-primary" type="button">Evaluate Output</button>
-            <button id="sampleButton" class="btn-secondary" type="button">Load Sample</button>
+        <div id="presetDescription" class="preset-description"></div>
+        <div id="criteriaChips" class="criteria-chips"></div>
+      </section>
+
+      <section class="panel input-panel glass">
+        <div class="section-header">
+          <div>
+            <h3>Outputs</h3>
+            <p>Paste real model outputs or use the demos.</p>
           </div>
+          <div class="button-row">
+            <button id="swapBtn" class="secondary-btn hidden">Swap A/B</button>
+            <button id="evaluateBtn" class="primary-btn">Evaluate</button>
+          </div>
+        </div>
 
-          <div class="input-meta">
-            <div>
-              <span class="meta-label">Chars</span>
-              <strong id="charCount">0</strong>
+        <div id="inputColumns" class="input-columns single">
+          <article class="output-card">
+            <div class="output-header">
+              <h4>Output A</h4>
+              <span class="tag">Primary</span>
             </div>
-            <div>
-              <span class="meta-label">Words</span>
-              <strong id="wordCount">0</strong>
+            <label>
+              <span>Label</span>
+              <input id="labelA" type="text" placeholder="e.g. Claude / Candidate A" />
+            </label>
+            <label>
+              <span>Prompt / task context</span>
+              <textarea id="promptInput" rows="4" placeholder="Optional: paste the user request or evaluation task here."></textarea>
+            </label>
+            <label>
+              <span>Output text</span>
+              <textarea id="outputA" rows="12" placeholder="Paste model output A"></textarea>
+            </label>
+          </article>
+
+          <article id="cardB" class="output-card hidden">
+            <div class="output-header">
+              <h4>Output B</h4>
+              <span class="tag alt">Compare</span>
             </div>
+            <label>
+              <span>Label</span>
+              <input id="labelB" type="text" placeholder="e.g. GPT / Candidate B" />
+            </label>
+            <label>
+              <span>Output text</span>
+              <textarea id="outputB" rows="18" placeholder="Paste model output B"></textarea>
+            </label>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel results glass">
+        <div class="section-header">
+          <div>
+            <h3>Results</h3>
+            <p>Animated overall gauges plus criterion-level findings.</p>
           </div>
-        </section>
-
-        <section class="panel panel-results">
-          <div class="panel-head">
-            <div>
-              <p class="section-label">Results</p>
-              <h2>Evaluation Report</h2>
-            </div>
-            <span id="statusChip" class="status-chip idle">Awaiting input</span>
+          <div class="button-row">
+            <button id="saveHistoryBtn" class="secondary-btn">Save to history</button>
+            <button id="exportBtn" class="secondary-btn">Export JSON</button>
           </div>
+        </div>
 
-          <div id="emptyState" class="empty-state">
-            <p>No evaluation yet.</p>
-            <span>Run an analysis to inspect composite scoring, category breakdowns, and rule hits.</span>
-          </div>
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">✨</div>
+          <p>No evaluation yet. Pick a preset and hit <strong>Evaluate</strong>.</p>
+        </div>
 
-          <div id="resultsView" class="results-view hidden" aria-live="polite">
-            <section class="score-overview">
-              <div class="score-ring">
-                <div class="score-ring-inner">
-                  <span id="overallScore">0</span>
-                  <small>/100</small>
-                </div>
-              </div>
-              <div class="overview-copy">
-                <h3 id="overallLabel">Composite Score</h3>
-                <p id="overallSummary"></p>
-                <div class="signal-list" id="signalList"></div>
-              </div>
-            </section>
-
-            <section>
-              <div class="subhead">
-                <h3>Category Scores</h3>
-                <span class="muted">Weighted via selected preset</span>
-              </div>
-              <div id="scoreBars" class="score-bars"></div>
-            </section>
-
-            <section class="analysis-grid">
-              <article class="analysis-card">
-                <div class="subhead">
-                  <h3>Findings</h3>
-                  <span class="muted">Rule and heuristic output</span>
-                </div>
-                <ul id="findingsList" class="stack-list"></ul>
-              </article>
-              <article class="analysis-card">
-                <div class="subhead">
-                  <h3>Summary</h3>
-                  <span class="muted">Saved to local history</span>
-                </div>
-                <div id="summaryBlock" class="code-block"></div>
-              </article>
-            </section>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <script type="module" src="js/app.js"></script>
-  </body>
+        <div id="resultsContent" class="results-content hidden">
+          <div id="summaryGrid" class="summary-grid"></div>
+          <div id="winnerBanner" class="winner-banner hidden"></div>
+          <div id="detailsGrid" class="details-grid"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
 </html>
