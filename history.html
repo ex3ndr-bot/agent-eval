@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent Eval History</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Static Demo / Local Persistence</p>
+          <h1>Evaluation History</h1>
+          <p class="subtitle">Recent analyses stored in localStorage on this browser only.</p>
+        </div>
+        <nav class="nav-links" aria-label="Primary">
+          <a class="nav-link" href="index.html">Dashboard</a>
+          <a class="nav-link active" href="history.html">History</a>
+        </nav>
+      </header>
+
+      <main class="history-layout">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="section-label">Timeline</p>
+              <h2>Saved Evaluations</h2>
+            </div>
+            <button id="clearHistoryButton" class="btn-secondary" type="button">Clear History</button>
+          </div>
+          <div id="historyEmpty" class="empty-state">
+            <p>No local evaluations saved.</p>
+            <span>Run an evaluation from the dashboard to build a local timeline.</span>
+          </div>
+          <div id="historyList" class="history-list hidden"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module">
+      const STORAGE_KEY = "agent-eval-history";
+      const historyList = document.querySelector("#historyList");
+      const historyEmpty = document.querySelector("#historyEmpty");
+      const clearButton = document.querySelector("#clearHistoryButton");
+
+      const formatDate = (timestamp) =>
+        new Intl.DateTimeFormat("en-US", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        }).format(new Date(timestamp));
+
+      const scoreTone = (score) => {
+        if (score >= 85) return "excellent";
+        if (score >= 70) return "good";
+        if (score >= 50) return "moderate";
+        return "poor";
+      };
+
+      const loadHistory = () => {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        } catch {
+          return [];
+        }
+      };
+
+      const render = () => {
+        const items = loadHistory();
+
+        if (!items.length) {
+          historyEmpty.classList.remove("hidden");
+          historyList.classList.add("hidden");
+          historyList.innerHTML = "";
+          return;
+        }
+
+        historyEmpty.classList.add("hidden");
+        historyList.classList.remove("hidden");
+        historyList.innerHTML = items
+          .slice()
+          .reverse()
+          .map(
+            (item) => `
+              <article class="history-item">
+                <div class="history-head">
+                  <div>
+                    <p class="section-label">${item.configLabel}</p>
+                    <h3>${item.label}</h3>
+                  </div>
+                  <div class="history-score ${scoreTone(item.overall)}">${item.overall}</div>
+                </div>
+                <p class="history-meta">${formatDate(item.timestamp)}</p>
+                <p class="history-text">${item.preview}</p>
+                <div class="history-tags">
+                  ${item.breakdown
+                    .map(
+                      (entry) =>
+                        `<span class="history-tag">${entry.label}: ${entry.score}</span>`
+                    )
+                    .join("")}
+                </div>
+              </article>
+            `
+          )
+          .join("");
+      };
+
+      clearButton.addEventListener("click", () => {
+        localStorage.removeItem(STORAGE_KEY);
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>

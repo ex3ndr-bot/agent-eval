@@ -1,6 +1,0 @@
-{
-  "candidate": "Paris is the capital of France. It is known for the Eiffel Tower.",
-  "reference": "Paris is the capital city of France and includes landmarks such as the Eiffel Tower.",
-  "output_format": "text",
-  "strategy": "heuristic"
-}
