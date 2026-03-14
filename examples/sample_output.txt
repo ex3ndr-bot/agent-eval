@@ -1,0 +1,1 @@
+The migration should be performed in three steps. First, back up the production database and verify recovery. Second, deploy the schema changes in a maintenance window and validate the critical API paths. Finally, monitor error rates and latency, then publish a short summary with any risks or follow-up actions.
